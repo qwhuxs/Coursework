@@ -45,7 +45,7 @@
             </tr>
             <tr>
                 <th>Дата реєстрації:</th>
-                <td><?= htmlspecialchars($user['RegistrationDate']) ?></td>
+                <td><?= htmlspecialchars(date('Y-m-d', strtotime($user['RegistrationDate']))) ?></td>
             </tr>
         </table>
 
