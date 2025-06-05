@@ -17,6 +17,13 @@
                 <?php else: ?>
                     <?php foreach ($products as $product): ?>
                         <div class="product-card">
+                            <?php if (!empty($product['ImageURL'])): ?>
+                                <img src="<?php echo htmlspecialchars($product['ImageURL']); ?>" alt="<?php echo htmlspecialchars($product['ProductName']); ?>" style="width: 200px; height: 200px; object-fit: cover;">
+                            <?php else: ?>
+                                <div style="width: 200px; height: 200px; background: #ddd; display: flex; align-items: center; justify-content: center;">
+                                    Немає фото
+                                </div>
+                            <?php endif; ?>
                             <h3><?php echo htmlspecialchars($product['ProductName']); ?></h3>
                             <p class="price"><?php echo number_format($product['Price'], 2); ?> грн</p>
                             <a href="<?php echo base_url('/product/detail/' . $product['ProductID']); ?>" class="btn">Детальніше</a>

@@ -63,6 +63,7 @@ class AdminController
             'price' => $_POST['price'],
             'stock' => $_POST['stock'],
             'category' => $_POST['category'],
+            'image' => $_POST['image'], 
         ];
 
         if ($action === 'add') {
@@ -76,6 +77,7 @@ class AdminController
         header("Location: " . base_url('/admin/products'));
         exit;
     }
+
 
     public function delete()
     {

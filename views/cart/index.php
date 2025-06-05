@@ -3,11 +3,11 @@
 
 <?php
 if (!empty($_SESSION['message'])) {
-    echo '<div class="alert alert-success">' . htmlspecialchars($_SESSION['message']) . '</div>';
+    echo '<div class="alert alert-success text-center custom-alert">' . htmlspecialchars($_SESSION['message']) . '</div>';
     unset($_SESSION['message']);
 }
 if (!empty($_SESSION['error'])) {
-    echo '<div class="alert alert-danger">' . htmlspecialchars($_SESSION['error']) . '</div>';
+    echo '<div class="alert alert-danger text-center custom-alert">' . htmlspecialchars($_SESSION['error']) . '</div>';
     unset($_SESSION['error']);
 }
 ?>
@@ -16,7 +16,7 @@ if (!empty($_SESSION['error'])) {
 
 <?php if (empty($cartItems)): ?>
 
-    <div class="empty-cart">
+    <div class="empty-cart text-center">
         <p>Ваш кошик порожній.</p>
         <a href="<?php echo base_url('products'); ?>" class="btn btn-primary">Повернутися до товарів</a>
     </div>

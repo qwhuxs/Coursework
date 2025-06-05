@@ -13,6 +13,12 @@
             <div class="products-grid">
                 <?php foreach ($featuredProducts as $product): ?>
                     <div class="product-card">
+                        <?php if (!empty($product['ImageURL'])): ?>
+                            <img src="<?= htmlspecialchars($product['ImageURL']) ?>" alt="<?= htmlspecialchars($product['ProductName']) ?>" class="product-image">
+                        <?php else: ?>
+                            <img src="/path/to/default-image.jpg" alt="No image" class="product-image">
+                        <?php endif; ?>
+
                         <h3><?= htmlspecialchars($product['ProductName']) ?></h3>
                         <p class="price"><?= number_format($product['Price'], 2) ?> грн</p>
                         <a href="<?= base_url('/product/detail/' . $product['ProductID']) ?>" class="btn">Детальніше</a>
@@ -21,6 +27,7 @@
             </div>
         </div>
     </section>
+
 
     <section class="categories">
         <div class="container">

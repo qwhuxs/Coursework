@@ -4,15 +4,22 @@
 <main class="main">
     <div class="container">
         <div class="product-detail">
+            <div class="product-images">
+                <?php if (!empty($product['ImageURL'])): ?>
+                    <img src="<?php echo htmlspecialchars($product['ImageURL']); ?>" alt="<?php echo htmlspecialchars($product['ProductName']); ?>" />
+                <?php endif; ?>
+            </div>
 
             <div class="product-info">
                 <h1><?php echo htmlspecialchars($product['ProductName']); ?></h1>
+
                 <div class="rating">
                     <?php for ($i = 1; $i <= 5; $i++): ?>
                         <span class="<?php echo $i <= round($averageRating) ? 'filled' : ''; ?>">★</span>
                     <?php endfor; ?>
                     <span>(<?php echo $averageRating; ?>/5)</span>
                 </div>
+
                 <p class="price"><?php echo number_format($product['Price'], 2); ?> грн</p>
                 <p class="stock"><?php echo $product['Stock'] > 0 ? 'Є в наявності' : 'Немає в наявності'; ?></p>
                 <p class="description"><?php echo htmlspecialchars($product['Description']); ?></p>
@@ -30,6 +37,7 @@
                 <?php endif; ?>
             </div>
         </div>
+
     </div>
 </main>
 

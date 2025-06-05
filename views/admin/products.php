@@ -7,7 +7,7 @@
         <?php if (!empty($_SESSION['message'])): ?>
             <div class="alert success">
                 <?php
-                echo htmlspecialchars($_SESSION['message']);
+                echo htmlspecialchars($_SESSION['message'] ?? '');
                 unset($_SESSION['message']);
                 ?>
             </div>
@@ -15,7 +15,7 @@
 
         <?php if (isset($_SESSION['message'])): ?>
             <div class="alert success">
-                <?php echo $_SESSION['message'];
+                <?php echo $_SESSION['message'] ?? '';
                 unset($_SESSION['message']); ?>
             </div>
         <?php endif; ?>
@@ -59,10 +59,15 @@
                         <select name="category" id="productCategory" required>
                             <?php foreach ($categories as $category): ?>
                                 <option value="<?php echo $category['CategoryID']; ?>">
-                                    <?php echo htmlspecialchars($category['CategoryName']); ?>
+                                    <?php echo htmlspecialchars($category['CategoryName'] ?? ''); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Фото (URL):</label>
+                        <input type="text" name="image" id="productImage" placeholder="Вставте URL зображення">
                     </div>
 
                     <button type="submit" class="btn">Зберегти</button>
@@ -78,6 +83,7 @@
                     <th>Ціна</th>
                     <th>Кількість</th>
                     <th>Категорія</th>
+                    <th>Фото</th>
                     <th>Дії</th>
                 </tr>
             </thead>
@@ -85,7 +91,7 @@
                 <?php foreach ($products as $product): ?>
                     <tr>
                         <td><?php echo $product['ProductID']; ?></td>
-                        <td><?php echo htmlspecialchars($product['ProductName']); ?></td>
+                        <td><?php echo htmlspecialchars($product['ProductName'] ?? ''); ?></td>
                         <td><?php echo number_format($product['Price'], 2); ?> грн</td>
                         <td><?php echo $product['Stock']; ?></td>
                         <td>
@@ -93,7 +99,7 @@
                             $categoryName = '';
                             foreach ($categories as $category) {
                                 if ($category['CategoryID'] == $product['CategoryID']) {
-                                    $categoryName = $category['CategoryName'];
+                                    $categoryName = $category['CategoryName'] ?? '';
                                     break;
                                 }
                             }
@@ -101,20 +107,29 @@
                             ?>
                         </td>
                         <td>
+                            <?php if (!empty($product['ImageURL'])): ?>
+                                <img src="<?php echo htmlspecialchars($product['ImageURL'] ?? ''); ?>" alt="Фото товару" style="width: 50px; height: 50px; object-fit: cover;">
+                            <?php else: ?>
+                                <span>Немає фото</span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
                             <button class="btn btn-edit" onclick="editProduct(
-                                '<?php echo $product['ProductID']; ?>',
-                                '<?php echo htmlspecialchars($product['ProductName'], ENT_QUOTES); ?>',
-                                '<?php echo htmlspecialchars($product['Description'], ENT_QUOTES); ?>',
-                                '<?php echo $product['Price']; ?>',
-                                '<?php echo $product['Stock']; ?>',
-                                '<?php echo $product['CategoryID']; ?>'
-                            )">Редагувати</button>
+                        '<?php echo $product['ProductID']; ?>',
+                        '<?php echo htmlspecialchars($product['ProductName'] ?? '', ENT_QUOTES); ?>',
+                        '<?php echo htmlspecialchars($product['Description'] ?? '', ENT_QUOTES); ?>',
+                        '<?php echo $product['Price']; ?>',
+                        '<?php echo $product['Stock']; ?>',
+                        '<?php echo $product['CategoryID']; ?>',
+                        '<?php echo htmlspecialchars($product['ImageURL'] ?? '', ENT_QUOTES); ?>'
+                    )">Редагувати</button>
 
-                            <form method="post" action="<?php echo base_url('/admin/products/delete'); ?>" style="display:inline;">
+                            <form method="post" action="<?php echo base_url('/admin/products/delete'); ?>" style="display:inline;" onsubmit="return confirm('Ви дійсно хочете видалити цей товар?');">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?php echo $product['ProductID']; ?>">
                                 <button type="submit" class="btn btn-danger">Видалити</button>
                             </form>
+
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -150,7 +165,7 @@
         }
     }
 
-    function editProduct(id, name, description, price, stock, category) {
+    function editProduct(id, name, description, price, stock, category, image) {
         document.getElementById('modalTitle').innerText = 'Редагувати товар';
         document.getElementById('formAction').value = 'edit';
         document.getElementById('productId').value = id;
@@ -159,6 +174,7 @@
         document.getElementById('productPrice').value = price;
         document.getElementById('productStock').value = stock;
         document.getElementById('productCategory').value = category;
+        document.getElementById('productImage').value = image;
         modal.style.display = 'block';
     }
 </script>
