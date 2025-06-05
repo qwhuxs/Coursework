@@ -44,7 +44,7 @@ class CartModel
 
     public function updateCartItem($cartId, $quantity)
     {
-        $quantity = max(1, (int)$quantity); 
+        $quantity = max(1, (int)$quantity);
         $stmt = $this->db->prepare(
             "UPDATE Cart SET Quantity = :quantity WHERE CartID = :cartId"
         );
@@ -65,5 +65,23 @@ class CartModel
             "DELETE FROM Cart WHERE UserID = :userId"
         );
         return $stmt->execute([':userId' => $userId]);
+    }
+
+    public function getCartItemByUserAndProduct($userId, $productId)
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM Cart WHERE UserID = :userId AND ProductID = :productId"
+        );
+        $stmt->execute([':userId' => $userId, ':productId' => $productId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getCartItemById($cartId)
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM Cart WHERE CartID = :cartId"
+        );
+        $stmt->execute([':cartId' => $cartId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

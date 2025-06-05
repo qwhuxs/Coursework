@@ -48,13 +48,21 @@ class CartController
                 exit;
             }
 
-            $quantity = max(1, min($quantity, $product['Stock']));
-
+            $maxPerItem = 5;
             $cartModel = new CartModel();
             $userId = $_SESSION['user']['UserID'];
-            $cartModel->addToCart($userId, $productId, $quantity);
 
-            $_SESSION['message'] = 'Товар додано до кошика!';
+            $currentItem = $cartModel->getCartItemByUserAndProduct($userId, $productId);
+            $currentQuantity = $currentItem ? (int)$currentItem['Quantity'] : 0;
+
+            $quantity = max(1, min($quantity, $product['Stock'], $maxPerItem - $currentQuantity));
+
+            if ($quantity > 0) {
+                $cartModel->addToCart($userId, $productId, $quantity);
+                $_SESSION['message'] = 'Товар додано до кошика!';
+            } else {
+                $_SESSION['error'] = 'Неможливо додати більше цього товару (макс. ' . $maxPerItem . ')';
+            }
         } else {
             $_SESSION['error'] = 'Неправильний ID товару';
         }
@@ -62,7 +70,6 @@ class CartController
         header("Location: " . base_url('cart'));
         exit;
     }
-
 
     public function update()
     {
@@ -73,11 +80,20 @@ class CartController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['quantity'])) {
             $cartModel = new CartModel();
+            $productModel = new ProductModel();
             $userId = $_SESSION['user']['UserID'];
 
             foreach ($_POST['quantity'] as $cartId => $quantity) {
                 $quantity = max(1, (int)$quantity);
-                $cartModel->updateCartItem($cartId, $quantity);
+
+                $item = $cartModel->getCartItemById($cartId);
+                if ($item) {
+                    $product = $productModel->getProductById($item['ProductID']);
+                    $maxQuantity = min(5, $product['Stock']);
+
+                    $quantity = min($quantity, $maxQuantity);
+                    $cartModel->updateCartItem($cartId, $quantity);
+                }
             }
 
             $_SESSION['message'] = 'Кошик оновлено!';
